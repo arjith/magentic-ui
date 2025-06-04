@@ -314,7 +314,22 @@ Then run the UI:
 magentic ui --port 8081
 ```
 
+
 The frontend from source will be available at <http://localhost:8000>, and the compiled frontend will be available at <http://localhost:8081>.
+
+### Testing
+
+After installing the Python dependencies, install the Playwright browsers so that the tests can run:
+
+```bash
+playwright install
+```
+
+You can then execute the tests with:
+
+```bash
+pytest -q
+```
 
 
 ## ⚠️ Troubleshooting
