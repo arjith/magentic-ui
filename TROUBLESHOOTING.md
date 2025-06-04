@@ -60,12 +60,29 @@ This document lists common issues users have encountered with Magentic-UI and ho
 - Check firewall settings and ensure required ports are open.
 - Try restarting Docker and Magentic-UI.
 
-## 6. 🏔️ Alpine Linux Compatibility
+## 6. 🧪 Playwright Dependencies Missing
+
+**Error:**
+```
+Playwright Host validation warning:
+╔══════════════════════════════════════════════════════╗
+║ Host system is missing dependencies to run browsers. ║
+╚══════════════════════════════════════════════════════╝
+```
+
+**Solution:**
+- Install required browser packages with:
+  ```bash
+  playwright install chromium --with-deps
+  ```
+- After installation, rerun `poe test`.
+
+## 7. 🏔️ Alpine Linux Compatibility
 
 **Issue:**  
 - Magentic-UI is not tested on Alpine Linux. Use Ubuntu or Debian for best results.
 
-## 7. 🌐 Running on Remote Servers
+## 8. 🌐 Running on Remote Servers
 
 **Issue:**  
 - UI is not accessible remotely, or browser does not work.
@@ -74,7 +91,7 @@ This document lists common issues users have encountered with Magentic-UI and ho
 - Make sure ports are open and forwarded correctly.
 - Check firewall and security group settings.
 
-## 8. 🟪 Magentic Command Not Found
+## 9. 🟪 Magentic Command Not Found
 
 **Issue:**
 - Command not found: Magentic
@@ -95,7 +112,7 @@ This document lists common issues users have encountered with Magentic-UI and ho
     ```
 
 
-## 9. ❓ Still Having Issues?
+## 10. ❓ Still Having Issues?
 
 - Double-check all [pre-requisites](#pre-requisites-please-read) in the README.
 - Search [GitHub Issues](https://github.com/microsoft/magentic-ui/issues) for similar problems.

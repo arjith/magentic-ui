@@ -104,7 +104,13 @@ The plan is stored inside the Orchestrator and is used to execute the task. **Fo
 
 All intermediate progress steps are clearly displayed to the user. Furthermore, the user can pause the execution of the plan and send additional requests or feedback. The user can also configure through the interface whether agent actions (e.g., clicking a button) require approval.
 
+### Architecture
 
+The sequence below shows how the CLI initializes the agent team and how the Orchestrator drives planning and execution.
+
+<p align="center">
+  <img src="docs/architecture.svg" alt="Architecture sequence" width="600"/>
+</p>
 ### Autonomous Evaluation
 
 To evaluate its autonomous capabilities, Magentic-UI has been tested against several benchmarks: [GAIA](https://huggingface.co/datasets/gaia-benchmark/GAIA) test set (42.52%), which assesses general AI assistants across reasoning, tool use, and web interaction tasks ; [AssistantBench](https://huggingface.co/AssistantBench) test set (27.60%), focusing on realistic, time-consuming web tasks ; [WebVoyager](https://github.com/MinorJerry/WebVoyager) (82.2%), measuring end-to-end web navigation in real-world scenarios ; and [WebGames])(https://webgames.convergence.ai/ https://huggingface.co/datasets/convergence-ai/webgames) (45.5%), evaluating general-purpose web-browsing agents through interactive challenges.

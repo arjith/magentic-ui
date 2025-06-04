@@ -1,0 +1,17 @@
+sequenceDiagram
+    participant CLI as CLI (_cli.py)
+    participant GetTaskTeam as get_task_team
+    participant GroupChat
+    participant Orchestrator
+    participant WebSurfer
+    participant CoderAgent
+    participant FileSurfer
+    participant UserProxy
+
+    CLI->>GetTaskTeam: call get_task_team()
+    GetTaskTeam->>GroupChat: create GroupChat with Orchestrator and agents
+    GroupChat->>Orchestrator: coordinate planning & execution
+    Orchestrator->>WebSurfer: surf the web
+    Orchestrator->>CoderAgent: edit code
+    Orchestrator->>FileSurfer: read/write files
+    Orchestrator->>UserProxy: get confirmations
