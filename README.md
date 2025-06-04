@@ -330,7 +330,8 @@ After installing the project dependencies, install the Playwright browsers:
 playwright install
 ```
 
-This command is required to run the Playwright-based tests. Once the browsers are installed, you can execute the full check suite with:
+Run this command in every fresh environment before executing tests with `pytest` or `poe check`.
+Once the browsers are installed, you can execute the full check suite with:
 
 ```bash
 poe check
