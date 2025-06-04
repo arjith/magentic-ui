@@ -316,6 +316,19 @@ magentic ui --port 8081
 
 The frontend from source will be available at <http://localhost:8000>, and the compiled frontend will be available at <http://localhost:8081>.
 
+## 🧪 Testing
+
+After installing the project dependencies, install the Playwright browsers:
+
+```bash
+playwright install
+```
+
+This command is required to run the Playwright-based tests. Once the browsers are installed, you can execute the full check suite with:
+
+```bash
+poe check
+```
 
 ## ⚠️ Troubleshooting
 
