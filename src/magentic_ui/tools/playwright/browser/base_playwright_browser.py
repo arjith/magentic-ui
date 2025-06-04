@@ -132,6 +132,10 @@ class DockerPlaywrightBrowser(PlaywrightBrowser):
         """
         pass
 
+    def _update_ports_from_container(self) -> None:
+        """Update internal port values from the running container."""
+        pass
+
     def _close_container(self) -> None:
         if self._container:
             self._container.stop(timeout=10)
@@ -163,6 +167,8 @@ class DockerPlaywrightBrowser(PlaywrightBrowser):
             self._container = await self.create_container()
             try:
                 await asyncio.to_thread(self._container.start)
+                await asyncio.to_thread(self._container.reload)
+                self._update_ports_from_container()
                 break
             except DockerException as e:
                 # This throws an exception.. should we try/catch this as well?

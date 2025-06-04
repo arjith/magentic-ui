@@ -5,7 +5,6 @@ import logging
 
 from pathlib import Path
 import secrets
-import socket
 
 from autogen_core import Component
 import docker
@@ -87,6 +86,8 @@ class VncDockerPlaywrightBrowser(
         super().__init__()
         self._bind_dir = bind_dir
         self._image = image
+        self._container_playwright_port = playwright_port
+        self._container_novnc_port = novnc_port
         self._playwright_port = playwright_port
         self._novnc_port = novnc_port
         self._playwright_websocket_path = (
@@ -101,27 +102,13 @@ class VncDockerPlaywrightBrowser(
         )
         self._docker_name = f"magentic-ui-vnc-browser_{self._playwright_websocket_path}_{self._novnc_port}"
 
-    def _get_available_port(self) -> tuple[int, socket.socket]:
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.bind(("127.0.0.1", 0))
-        port = s.getsockname()[1]
-        return port, s
-
     # TODO: This is a temporary solution to avoid port conflicts. Ideally we should allow docker to tell us which sockets to use
     def _generate_new_browser_address(self) -> None:
         """
         Generate new ports for Playwright and noVNC.
         """
-        self._playwright_port, playwright_sock = self._get_available_port()
-        self._novnc_port, novnc_sock = self._get_available_port()
-        self._hostname = (
-            f"magentic-ui-vnc-browser_{self._playwright_websocket_path}_{self._novnc_port}"
-            if self._inside_docker
-            else "localhost"
-        )
-        self._docker_name = f"magentic-ui-vnc-browser_{self._playwright_websocket_path}_{self._novnc_port}"
-        playwright_sock.close()
-        novnc_sock.close()
+        self._playwright_port = 0
+        self._novnc_port = 0
 
     @property
     def browser_address(self) -> str:
@@ -169,18 +156,28 @@ class VncDockerPlaywrightBrowser(
             auto_remove=True,
             network=self._network_name if self._inside_docker else None,
             ports={
-                f"{self._playwright_port}/tcp": self._playwright_port,
-                f"{self._novnc_port}/tcp": self._novnc_port,
+                f"{self._container_playwright_port}/tcp": self._playwright_port,
+                f"{self._container_novnc_port}/tcp": self._novnc_port,
             },
             volumes={
                 str(self._bind_dir.resolve()): {"bind": "/workspace", "mode": "rw"}
             },
             environment={
                 "PLAYWRIGHT_WS_PATH": self._playwright_websocket_path,
-                "PLAYWRIGHT_PORT": str(self._playwright_port),
-                "NO_VNC_PORT": str(self._novnc_port),
+                "PLAYWRIGHT_PORT": str(self._container_playwright_port),
+                "NO_VNC_PORT": str(self._container_novnc_port),
             },
         )
+
+    def _update_ports_from_container(self) -> None:
+        assert self._container is not None
+        ports = self._container.attrs.get("NetworkSettings", {}).get("Ports", {})
+        mapping = ports.get(f"{self._container_playwright_port}/tcp")
+        if mapping:
+            self._playwright_port = int(mapping[0]["HostPort"])
+        mapping = ports.get(f"{self._container_novnc_port}/tcp")
+        if mapping:
+            self._novnc_port = int(mapping[0]["HostPort"])
 
     def _to_config(self) -> VncDockerPlaywrightBrowserConfig:
         return VncDockerPlaywrightBrowserConfig(
