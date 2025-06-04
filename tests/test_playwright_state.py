@@ -1,7 +1,7 @@
 import pytest
 import pytest_asyncio
 from typing import AsyncGenerator
-from playwright.async_api import Browser, BrowserContext, async_playwright
+from playwright.async_api import Browser, BrowserContext, Page, async_playwright
 from magentic_ui.tools.playwright.playwright_state import (
     BrowserState,
     Tab,
@@ -32,7 +32,7 @@ async def multi_tab_context(
     browser_context: BrowserContext,
 ) -> AsyncGenerator[BrowserContext, None]:
     # Create multiple tabs with different URLs and scroll positions
-    pages = []
+    pages: list[Page] = []
     urls = [
         "data:text/html,<body style='height: 2000px'>Page 1</body>",
         "data:text/html,<body style='height: 2000px'>Page 2</body>",
@@ -40,7 +40,7 @@ async def multi_tab_context(
     ]
 
     for url in urls:
-        page = await browser_context.new_page()
+        page: Page = await browser_context.new_page()
         await page.goto(url)
         await page.evaluate("window.scrollTo(0, 100)")
         pages.append(page)
@@ -54,7 +54,7 @@ async def multi_tab_context(
 @pytest.mark.asyncio
 async def test_save_state_basic(browser_context: BrowserContext):
     """Test saving state with a single tab"""
-    page = await browser_context.new_page()
+    page: Page = await browser_context.new_page()
     url = "data:text/html,<body>Test Page</body>"
     await page.goto(url)
 
@@ -71,7 +71,7 @@ async def test_save_state_basic(browser_context: BrowserContext):
 @pytest.mark.asyncio
 async def test_save_state_with_scroll(browser_context: BrowserContext):
     """Test saving state with scroll position"""
-    page = await browser_context.new_page()
+    page: Page = await browser_context.new_page()
     url = "data:text/html,<body style='height: 2000px'>Test Page</body>"
     await page.goto(url)
     await page.evaluate("window.scrollTo(0, 100)")

@@ -40,6 +40,7 @@ async def azure_agent_example():
     async with AIProjectClient.from_connection_string(  # type: ignore
         credential=credential, conn_str=os.getenv("AI_PROJECT_CONNECTION_STRING", "")
     ) as project_client:
+        project_client: AIProjectClient
         azure_agent = AzureAIAgent(
             name="azure_agent",
             description="An AI assistant",
@@ -92,9 +93,9 @@ async def get_task_team_with_azure_agent(
         return ChatCompletionClient.load_component(model_client_config)
 
     if not magentic_ui_config.inside_docker:
-        assert (
-            paths.external_run_dir == paths.internal_run_dir
-        ), "External and internal run dirs must be the same in non-docker mode"
+        assert paths.external_run_dir == paths.internal_run_dir, (
+            "External and internal run dirs must be the same in non-docker mode"
+        )
 
     model_client_orch = get_model_client(
         magentic_ui_config.model_client_configs.orchestrator
@@ -163,15 +164,15 @@ async def get_task_team_with_azure_agent(
     if magentic_ui_config.user_proxy_type == "dummy":
         user_proxy = DummyUserProxy(name="user_proxy")
     elif magentic_ui_config.user_proxy_type == "metadata":
-        assert (
-            magentic_ui_config.task is not None
-        ), "Task must be provided for metadata user proxy"
-        assert (
-            magentic_ui_config.hints is not None
-        ), "Hints must be provided for metadata user proxy"
-        assert (
-            magentic_ui_config.answer is not None
-        ), "Answer must be provided for metadata user proxy"
+        assert magentic_ui_config.task is not None, (
+            "Task must be provided for metadata user proxy"
+        )
+        assert magentic_ui_config.hints is not None, (
+            "Hints must be provided for metadata user proxy"
+        )
+        assert magentic_ui_config.answer is not None, (
+            "Answer must be provided for metadata user proxy"
+        )
         user_proxy = MetadataUserProxy(
             name="user_proxy",
             description="Metadata User Proxy Agent",
@@ -262,6 +263,7 @@ async def get_task_team_with_azure_agent(
     async with AIProjectClient.from_connection_string(  # type: ignore
         credential=credential, conn_str=os.getenv("AI_PROJECT_CONNECTION_STRING", "")
     ) as project_client:
+        project_client: AIProjectClient
         azure_reasoning_agent = AzureAIAgent(
             name="azure_reasoning_agent",
             description="An AI assistant that can help with complex math and logic tasks",
