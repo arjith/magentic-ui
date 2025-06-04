@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+from .utils import get_available_port
 
 from autogen_core import Component
 import docker
@@ -75,8 +76,14 @@ class HeadlessDockerPlaywrightBrowser(
         """
         Generate a new address for the Playwright browser. Used if the current address fails to connect.
         """
-        # TODO: Implement this
-        pass
+        port, sock = get_available_port()
+        self._playwright_port = port
+        self._hostname = (
+            f"magentic-ui-headless-browser_{self._playwright_port}"
+            if self._inside_docker
+            else "localhost"
+        )
+        sock.close()
 
     async def create_container(self) -> Container:
         """
