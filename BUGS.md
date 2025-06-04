@@ -45,7 +45,6 @@ These require additional type hints or code adjustments.
 ## TODOs in Source Code
 Several files contain TODO comments indicating incomplete implementations or design decisions:
 
-- `src/magentic_ui/tools/playwright/browser/headless_docker_playwright_browser.py` – `_generate_new_browser_address` not implemented.
 - `src/magentic_ui/tools/playwright/browser/vnc_docker_playwright_browser.py` – temporary port selection.
 - `src/magentic_ui/tools/url_status_manager.py` – refactor URL status logic and handle query/fragment parts.
 - `src/magentic_ui/teams/orchestrator/_group_chat.py` – `pause` method needs event-based approach.
