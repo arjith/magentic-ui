@@ -36,6 +36,7 @@ from autogen_agentchat.teams._group_chat._events import (
     GroupChatStart,
     GroupChatTermination,
 )
+from ._events import GroupChatPause, GroupChatResume
 from autogen_agentchat.teams._group_chat._base_group_chat_manager import (
     BaseGroupChatManager,
 )
@@ -493,6 +494,18 @@ class Orchestrator(BaseGroupChatManager):
 
     async def resume(self) -> None:
         """Resume the group chat manager."""
+        self._state.is_paused = False
+
+    @rpc
+    async def handle_pause(self, message: GroupChatPause, ctx: MessageContext) -> None:  # type: ignore
+        """Handle a pause event."""
+        self._state.is_paused = True
+
+    @rpc
+    async def handle_resume(
+        self, message: GroupChatResume, ctx: MessageContext
+    ) -> None:  # type: ignore
+        """Handle a resume event."""
         self._state.is_paused = False
 
     @event
@@ -1100,7 +1113,10 @@ class Orchestrator(BaseGroupChatManager):
             else []
         )
         completed_plan_str = "\n".join(
-            [f"COMPLETED STEP {i+1}: {step}" for i, step in enumerate(completed_steps)]
+            [
+                f"COMPLETED STEP {i + 1}: {step}"
+                for i, step in enumerate(completed_steps)
+            ]
         )
 
         # Add completed steps info to replan prompt

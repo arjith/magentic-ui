@@ -176,15 +176,21 @@ class FileSurfer(BaseChatAgent, Component[FileSurferConfig]):
             await self._browser.lazy_init()
             self.did_lazy_init = True
 
-    async def pause(self) -> None:
+    async def on_pause(self, cancellation_token: CancellationToken) -> None:
         """Pause the FileSurfer agent."""
         self.is_paused = True
         self._pause_event.set()
 
-    async def resume(self) -> None:
+    async def on_resume(self, cancellation_token: CancellationToken) -> None:
         """Resume the FileSurfer agent."""
         self.is_paused = False
         self._pause_event.clear()
+
+    async def pause(self) -> None:
+        await self.on_pause(CancellationToken())
+
+    async def resume(self) -> None:
+        await self.on_resume(CancellationToken())
 
     @property
     def produced_message_types(self) -> Sequence[type[BaseChatMessage]]:
@@ -586,7 +592,7 @@ class FileSurfer(BaseChatAgent, Component[FileSurferConfig]):
         current_page = self._browser.viewport_current_page
         total_pages = len(self._browser.viewport_pages)
         header += (
-            f" Viewport position: Showing page {current_page+1} of {total_pages}.\n"
+            f" Viewport position: Showing page {current_page + 1} of {total_pages}.\n"
         )
 
         return (header, self._browser.viewport)
