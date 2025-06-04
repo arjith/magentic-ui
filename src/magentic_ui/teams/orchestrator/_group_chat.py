@@ -127,25 +127,13 @@ class GroupChat(BaseGroupChat, Component[GroupChatConfig]):
                 source="orchestrator", state=json.dumps(partial_state)
             )  # type: ignore
 
-    async def pause(self) -> None:  # TODO: can this be implemented using events?
-        orchestrator = await self._runtime.try_get_underlying_agent_instance(
-            AgentId(type=self._group_chat_manager_topic_type, key=self._team_id),
-            type=Orchestrator,
-        )
-        await orchestrator.pause()
-        for agent in self._participants:
-            if hasattr(agent, "pause"):
-                await agent.pause()  # type: ignore
+    async def pause(self) -> None:
+        """Pause the team via events."""
+        await super().pause()
 
     async def resume(self) -> None:
-        orchestrator = await self._runtime.try_get_underlying_agent_instance(
-            AgentId(type=self._group_chat_manager_topic_type, key=self._team_id),
-            type=Orchestrator,
-        )
-        await orchestrator.resume()
-        for agent in self._participants:
-            if hasattr(agent, "resume"):
-                await agent.resume()  # type: ignore
+        """Resume the team via events."""
+        await super().resume()
 
     async def lazy_init(self) -> None:
         await asyncio.gather(

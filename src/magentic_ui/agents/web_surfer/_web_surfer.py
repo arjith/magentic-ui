@@ -416,7 +416,7 @@ class WebSurfer(BaseChatAgent, Component[WebSurferConfig]):
         await self._set_debug_dir()
         self.did_lazy_init = True
 
-    async def pause(self) -> None:
+    async def on_pause(self, cancellation_token: CancellationToken) -> None:
         """Pause the WebSurfer agent."""
         self.is_paused = True
         self._pause_event.set()
@@ -426,10 +426,16 @@ class WebSurfer(BaseChatAgent, Component[WebSurferConfig]):
         await self._pause_event.wait()
         cancellation_token.cancel()
 
-    async def resume(self) -> None:
+    async def on_resume(self, cancellation_token: CancellationToken) -> None:
         """Resume the WebSurfer agent."""
         self.is_paused = False
         self._pause_event.clear()
+
+    async def pause(self) -> None:
+        await self.on_pause(CancellationToken())
+
+    async def resume(self) -> None:
+        await self.on_resume(CancellationToken())
 
     async def close(self) -> None:
         """

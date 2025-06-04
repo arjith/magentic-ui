@@ -441,15 +441,21 @@ class CoderAgent(BaseChatAgent, Component[CoderAgentConfig]):
         # Close the model client.
         await self._model_client.close()
 
-    async def pause(self) -> None:
+    async def on_pause(self, cancellation_token: CancellationToken) -> None:
         """Pause the agent by setting the paused state."""
         self.is_paused = True
         self._paused.set()
 
-    async def resume(self) -> None:
+    async def on_resume(self, cancellation_token: CancellationToken) -> None:
         """Resume the agent by clearing the paused state."""
         self.is_paused = False
         self._paused.clear()
+
+    async def pause(self) -> None:
+        await self.on_pause(CancellationToken())
+
+    async def resume(self) -> None:
+        await self.on_resume(CancellationToken())
 
     @property
     def produced_message_types(self) -> Sequence[type[BaseChatMessage]]:
