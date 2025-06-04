@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from .utils import get_available_port
 
 from autogen_core import Component
 import docker
@@ -57,6 +56,7 @@ class HeadlessDockerPlaywrightBrowser(
         inside_docker: bool = False,
     ):
         super().__init__()
+        self._container_playwright_port = playwright_port
         self._playwright_port = playwright_port
         self._inside_docker = inside_docker
         self._hostname = (
@@ -76,14 +76,7 @@ class HeadlessDockerPlaywrightBrowser(
         """
         Generate a new address for the Playwright browser. Used if the current address fails to connect.
         """
-        port, sock = get_available_port()
-        self._playwright_port = port
-        self._hostname = (
-            f"magentic-ui-headless-browser_{self._playwright_port}"
-            if self._inside_docker
-            else "localhost"
-        )
-        sock.close()
+        self._playwright_port = 0
 
     async def create_container(self) -> Container:
         """
@@ -96,19 +89,26 @@ class HeadlessDockerPlaywrightBrowser(
         client = docker.from_env()
         return await asyncio.to_thread(
             client.containers.create,
-            name=f"magentic-ui-headless-browser_{self._playwright_port}",
+            name=f"magentic-ui-headless-browser_{self._container_playwright_port}",
             image="mcr.microsoft.com/playwright:v1.51.1-noble",
             detach=True,
             auto_remove=True,
             ports={
-                f"{self._playwright_port}/tcp": self._playwright_port,
+                f"{self._container_playwright_port}/tcp": self._playwright_port,
             },
             command=[
                 "/bin/sh",
                 "-c",
-                f"npx -y playwright@1.51 run-server --port {self._playwright_port} --host 0.0.0.0",
+                f"npx -y playwright@1.51 run-server --port {self._container_playwright_port} --host 0.0.0.0",
             ],
         )
+
+    def _update_ports_from_container(self) -> None:
+        assert self._container is not None
+        ports = self._container.attrs.get("NetworkSettings", {}).get("Ports", {})
+        mapping = ports.get(f"{self._container_playwright_port}/tcp")
+        if mapping:
+            self._playwright_port = int(mapping[0]["HostPort"])
 
     def _to_config(self) -> HeadlessBrowserConfig:
         return HeadlessBrowserConfig(
