@@ -8,6 +8,7 @@ This repository uses automated agents to assist with development tasks. Please f
 4. **Style** – Keep lines under 120 characters and prefer descriptive commit messages.
 5. **Playwright Setup** – If Playwright tests fail because browsers are missing, run `playwright install` before re-running `poe check`.
 6. **Ruff Formatting** – Validate formatting with `ruff format src samples --check` to ensure samples are correctly styled.
+7. **Review Tasks** – Check `docs/tasks.md` for known issues before starting work and update it when tasks are completed.
 
 ## Setup
 

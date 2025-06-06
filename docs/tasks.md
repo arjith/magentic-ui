@@ -57,6 +57,18 @@ Key files include:
    ```
    to confirm formatting, linting, type checking and tests all succeed.
 
+## 4. Clean Up Documentation
+Minor issues in the documentation can cause confusion for contributors.
+
+### Steps
+1. Fix known typos, such as the "questions to GitHub" wording in `SUPPORT.md`.
+2. Review other markdown files for additional spelling or grammar mistakes.
+3. After edits run:
+   ```bash
+   poe check
+   ```
+   to verify formatting and tests still pass.
+
 ---
 
 Keep this document up to date as tasks are completed or new issues are discovered.
