@@ -2,7 +2,7 @@ import asyncio
 import pytest
 from pydantic import BaseModel
 from autogen_core.models._model_client import ChatCompletionClient
-from autogen_core.models._types import CreateResult, RequestUsage
+from autogen_core.models import CreateResult, RequestUsage, ModelCapabilities
 from autogen_core import AgentId, CancellationToken
 from autogen_agentchat.agents import BaseChatAgent
 from autogen_agentchat.base import Response
@@ -46,7 +46,7 @@ class DummyChatCompletionClient(ChatCompletionClient):
         extra_create_args={},
         cancellation_token=None,
     ):
-        async def generator():
+        async def gen():
             yield ""
             yield CreateResult(
                 finish_reason="stop",
@@ -55,7 +55,7 @@ class DummyChatCompletionClient(ChatCompletionClient):
                 cached=False,
             )
 
-        return generator()
+        return gen()
 
     def _to_config(self) -> DummyModelConfig:  # type: ignore[override]
         return DummyModelConfig()
