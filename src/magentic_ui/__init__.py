@@ -7,6 +7,7 @@ from .approval_guard import (
     DEFAULT_REQUIRES_APPROVAL,
 )
 from .guarded_action import GuardedAction, ApprovalDeniedError, TrivialGuardedAction
+from .callback_wrapper import CallbackWrapper
 from .magentic_ui_config import MagenticUIConfig, ModelClientConfigs
 
 from .version import __version__
@@ -25,6 +26,7 @@ __all__ = [
     "GuardedAction",
     "ApprovalDeniedError",
     "TrivialGuardedAction",
+    "CallbackWrapper",
     "__version__",
     "ABOUT",
     "MagenticUIConfig",

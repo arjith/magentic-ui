@@ -65,6 +65,7 @@ from ...approval_guard import (
     BaseApprovalGuard,
     MaybeRequiresApproval,
 )
+from ...callback_wrapper import CallbackWrapper
 
 from ._events import WebSurferEvent
 from ._prompts import (
@@ -137,6 +138,9 @@ class WebSurferConfig(BaseModel):
     viewport_height: int = 1440
     viewport_width: int = 1440
     use_action_guard: bool = False
+    approval_guard: CallbackWrapper | None = None
+
+    model_config = {"arbitrary_types_allowed": True}
 
 
 class WebSurferState(BaseState):
@@ -250,6 +254,7 @@ class WebSurfer(BaseChatAgent, Component[WebSurferConfig]):
         viewport_height: int = 1440,
         viewport_width: int = 1440,
         use_action_guard: bool = False,
+        approval_guard: BaseApprovalGuard | None = None,
     ) -> None:
         """
         Initialize the WebSurfer.
@@ -352,7 +357,7 @@ class WebSurfer(BaseChatAgent, Component[WebSurferConfig]):
         self.is_paused = False
         self._pause_event = asyncio.Event()
         self.action_guard: BaseApprovalGuard | None = (
-            ApprovalGuardContext.approval_guard() if self.use_action_guard else None
+            approval_guard if self.use_action_guard else None
         )
         if self._model_client.model_info["vision"]:
             self.is_multimodal = True
@@ -1976,6 +1981,7 @@ class WebSurfer(BaseChatAgent, Component[WebSurferConfig]):
 
     @classmethod
     def _from_config(cls, config: WebSurferConfig) -> Self:
+        approval_guard = config.approval_guard() if config.approval_guard else None
         return cls(
             name=config.name,
             model_client=ChatCompletionClient.load_component(config.model_client),
@@ -1996,6 +2002,7 @@ class WebSurfer(BaseChatAgent, Component[WebSurferConfig]):
             viewport_height=config.viewport_height,
             viewport_width=config.viewport_width,
             use_action_guard=config.use_action_guard,
+            approval_guard=approval_guard,
         )
 
     @classmethod
