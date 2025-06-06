@@ -37,6 +37,26 @@ class DummyChatCompletionClient(ChatCompletionClient):
             cached=False,
         )
 
+    def create_stream(
+        self,
+        messages,
+        *,
+        tools=[],
+        json_output=None,
+        extra_create_args={},
+        cancellation_token=None,
+    ):
+        async def generator():
+            yield ""
+            yield CreateResult(
+                finish_reason="stop",
+                content="",
+                usage=RequestUsage(0, 0),
+                cached=False,
+            )
+
+        return generator()
+
     def _to_config(self) -> DummyModelConfig:  # type: ignore[override]
         return DummyModelConfig()
 
@@ -46,6 +66,32 @@ class DummyChatCompletionClient(ChatCompletionClient):
 
     async def close(self) -> None:
         pass
+
+    def actual_usage(self) -> RequestUsage:
+        return RequestUsage(0, 0)
+
+    def total_usage(self) -> RequestUsage:
+        return RequestUsage(0, 0)
+
+    def count_tokens(self, messages, *, tools=[]) -> int:
+        return 0
+
+    def remaining_tokens(self, messages, *, tools=[]) -> int:
+        return 0
+
+    @property
+    def capabilities(self):
+        return {"vision": False, "function_calling": False, "json_output": False}
+
+    @property
+    def model_info(self):
+        return {
+            "vision": False,
+            "function_calling": False,
+            "json_output": False,
+            "family": "dummy",
+            "structured_output": False,
+        }
 
 
 class SimpleAgent(BaseChatAgent):
@@ -64,6 +110,10 @@ class SimpleAgent(BaseChatAgent):
         self.paused = True
 
     async def on_resume(self, cancellation_token: CancellationToken) -> None:
+        self.paused = False
+
+    async def on_reset(self, cancellation_token: CancellationToken) -> None:
+        """Reset the agent's paused state."""
         self.paused = False
 
 
