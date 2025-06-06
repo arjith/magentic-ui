@@ -130,7 +130,7 @@ class WebSurferConfig(BaseModel):
     max_actions_per_step: int = 5
     to_resize_viewport: bool = True
     url_statuses: Dict[str, UrlStatus] | None = None
-    url_block_list: List[str] | None = None
+    explicit_block_list: List[str] | None = Field(default=None, alias="url_block_list")
     single_tab_mode: bool = False
     json_model_output: bool = False
     multiple_tools_per_call: bool = False
@@ -189,7 +189,7 @@ class WebSurfer(BaseChatAgent, Component[WebSurferConfig]):
         to_resize_viewport (bool, optional): Whether to resize the viewport. Default: True.
         url_statuses (Dict[str, Literal["allowed", "rejected"]], optional): The set of allowed and rejected websites. Default: None.
         single_tab_mode (bool, optional): Whether to use single tab mode. Default: False.
-        url_block_list (List[str], optional): A list of URLs to block. Default: None.
+        explicit_block_list (List[str], optional): A list of URLs to block. Default: None.
         json_model_output (bool, optional): Whether to use JSON output for model_client instead of tool calls. Default: False.
         multiple_tools_per_call (bool, optional): Whether to allow execution of multiple tool calls sequentially per model call. Default: False.
         viewport_height (int, optional): The height of the viewport. Default: 1440.
@@ -243,6 +243,7 @@ class WebSurfer(BaseChatAgent, Component[WebSurferConfig]):
         max_actions_per_step: int = 5,
         to_resize_viewport: bool = True,
         url_statuses: Optional[Dict[str, UrlStatus]] = None,
+        explicit_block_list: Optional[List[str]] = None,
         url_block_list: Optional[List[str]] = None,
         single_tab_mode: bool = False,
         json_model_output: bool = False,
@@ -284,7 +285,8 @@ class WebSurfer(BaseChatAgent, Component[WebSurferConfig]):
         # Call init to set these in case not set
         self._context: BrowserContext | None = None
         self._url_status_manager: UrlStatusManager = UrlStatusManager(
-            url_statuses=url_statuses, url_block_list=url_block_list
+            url_statuses=url_statuses,
+            explicit_block_list=explicit_block_list or url_block_list,
         )
         self._page: Page | None = None
         self._last_download: Download | None = None
@@ -1995,7 +1997,7 @@ class WebSurfer(BaseChatAgent, Component[WebSurferConfig]):
             to_save_screenshots=config.to_save_screenshots,
             to_resize_viewport=config.to_resize_viewport,
             url_statuses=config.url_statuses,
-            url_block_list=config.url_block_list,
+            explicit_block_list=config.explicit_block_list,
             single_tab_mode=config.single_tab_mode,
             json_model_output=config.json_model_output,
             multiple_tools_per_call=config.multiple_tools_per_call,
