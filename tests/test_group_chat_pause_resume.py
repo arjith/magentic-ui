@@ -37,6 +37,25 @@ class DummyChatCompletionClient(ChatCompletionClient):
             cached=False,
         )
 
+    async def create_stream(
+        self,
+        messages,
+        *,
+        tools=[],
+        json_output=None,
+        extra_create_args={},
+        cancellation_token=None,
+    ):
+        if False:
+            yield
+        yield ""
+        yield CreateResult(
+            finish_reason="stop",
+            content="",
+            usage=RequestUsage(0, 0),
+            cached=False,
+        )
+
     def _to_config(self) -> DummyModelConfig:  # type: ignore[override]
         return DummyModelConfig()
 
@@ -46,6 +65,26 @@ class DummyChatCompletionClient(ChatCompletionClient):
 
     async def close(self) -> None:
         pass
+
+    def actual_usage(self) -> RequestUsage:
+        return RequestUsage(0, 0)
+
+    def total_usage(self) -> RequestUsage:
+        return RequestUsage(0, 0)
+
+    def count_tokens(self, messages, *, tools=[]):
+        return 0
+
+    def remaining_tokens(self, messages, *, tools=[]):
+        return 0
+
+    @property
+    def capabilities(self):
+        return {}
+
+    @property
+    def model_info(self):
+        return {}
 
 
 class SimpleAgent(BaseChatAgent):
@@ -65,6 +104,10 @@ class SimpleAgent(BaseChatAgent):
 
     async def on_resume(self, cancellation_token: CancellationToken) -> None:
         self.paused = False
+
+    async def on_reset(self, cancellation_token: CancellationToken) -> None:
+        """Reset agent state; no-op for tests."""
+        pass
 
 
 @pytest.mark.asyncio
