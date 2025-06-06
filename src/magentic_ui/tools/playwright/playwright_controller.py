@@ -510,7 +510,7 @@ class PlaywrightController:
 
             # Move cursor with the scroll using gradual animation
             x, y = self.last_cursor_position
-            new_y = max(0, min(y - scroll_amount, self.viewport_height))
+            new_y = max(0, min(y + scroll_amount, self.viewport_height))
             await self._animation.gradual_cursor_animation(page, x, y, x, new_y)
         else:
             # Regular instant scroll
@@ -538,7 +538,7 @@ class PlaywrightController:
 
             # Move cursor with the scroll using gradual animation
             x, y = self.last_cursor_position
-            new_y = max(0, min(y + scroll_amount, self.viewport_height))
+            new_y = max(0, min(y - scroll_amount, self.viewport_height))
             await self._animation.gradual_cursor_animation(page, x, y, x, new_y)
         else:
             # Regular instant scroll
