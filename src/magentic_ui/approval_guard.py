@@ -228,7 +228,8 @@ class ApprovalGuard(BaseApprovalGuard):
             if len(selected_context) > 5:
                 selected_context = selected_context[-5:]
 
-            request_messages = [system_message]
+            # preserve order: system message followed by historical context
+            request_messages = [system_message] + selected_context
 
             result = await self.model_client.create(request_messages)
 
