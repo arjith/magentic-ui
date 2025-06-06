@@ -8,7 +8,7 @@ The Python source code lives under `src/magentic_ui`.
 
 - `agents/` – definitions for the different agents (e.g. **Orchestrator**, **WebSurfer**, **Coder**, **FileSurfer**, and **UserProxy**).
 - `backend/` – FastAPI backend that powers the web interface.
-- `tools/` – helper utilities used by the agents. For example, browser automation utilities live in `tools/playwright`.
+ - `tools/` – helper utilities used by the agents. For example, browser automation utilities live in `tools/playwright`. The `UrlStatusManager` here maintains allowed/rejected URL patterns along with an explicit block list for quick denies.
 - `eval/` – scripts and utilities for running benchmarks.
 - `task_team.py` and related modules – entry points for constructing agent teams.
 

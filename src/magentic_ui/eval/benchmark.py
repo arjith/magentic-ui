@@ -76,12 +76,12 @@ class Benchmark(ABC):
         if isinstance(scores[0].score, dict):
             for s in scores:
                 assert isinstance(s.score, dict), "Each score must be a dictionary."
-                assert all(
-                    isinstance(k, str) for k in s.score.keys()
-                ), "Each score key must be a string."
-                assert all(
-                    isinstance(v, float) for v in s.score.values()
-                ), "Each score value must be a float."
+                assert all(isinstance(k, str) for k in s.score.keys()), (
+                    "Each score key must be a string."
+                )
+                assert all(isinstance(v, float) for v in s.score.values()), (
+                    "Each score value must be a float."
+                )
 
             dict_scores = [s.score for s in scores if isinstance(s.score, dict)]
 
@@ -109,9 +109,9 @@ class Benchmark(ABC):
             }
             return {**mean_scores, **max_scores, "num_tasks": len(scores)}
         else:
-            assert all(
-                isinstance(s.score, float) for s in scores
-            ), "Each score must be a float."
+            assert all(isinstance(s.score, float) for s in scores), (
+                "Each score must be a float."
+            )
 
             float_scores = [s.score for s in scores if isinstance(s.score, float)]
 

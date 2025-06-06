@@ -149,7 +149,7 @@ async def get_task_team_with_azure_agent(
         url_statuses={key: "allowed" for key in orchestrator_config.allowed_websites}
         if orchestrator_config.allowed_websites
         else None,
-        url_block_list=get_internal_urls(magentic_ui_config.inside_docker, paths),
+        explicit_block_list=get_internal_urls(magentic_ui_config.inside_docker, paths),
         multiple_tools_per_call=magentic_ui_config.multiple_tools_per_call,
         downloads_folder=str(paths.internal_run_dir),
         debug_dir=str(paths.internal_run_dir),

@@ -46,3 +46,38 @@ async def test_url_status_manager():
     assert not url_status_manager.is_url_allowed("sample.com")
     assert not url_status_manager.is_url_allowed("sample.com/foo")
     assert not url_status_manager.is_url_allowed("sample.com/bar")
+
+
+@pytest.mark.asyncio
+async def test_explicit_block_list():
+    url_status_manager = UrlStatusManager(
+        url_statuses=None,
+        explicit_block_list=["blocked.com/private"],
+    )
+
+    assert url_status_manager.is_url_blocked("blocked.com/private/page")
+    assert not url_status_manager.is_url_allowed("blocked.com/private/page")
+
+
+@pytest.mark.asyncio
+async def test_url_match_with_query_and_fragment():
+    url_statuses = {
+        "example.com/path;param=value?foo=bar#frag": URL_ALLOWED,
+    }
+    url_status_manager = UrlStatusManager(url_statuses=url_statuses)
+
+    assert url_status_manager.is_url_allowed(
+        "https://example.com/path;param=value?foo=bar#frag"
+    )
+    assert not url_status_manager.is_url_allowed(
+        "https://example.com/path;param=value?foo=bar#other"
+    )
+    assert not url_status_manager.is_url_allowed(
+        "https://example.com/path;param=other?foo=bar#frag"
+    )
+
+
+@pytest.mark.asyncio
+async def test_url_block_list_alias():
+    manager = UrlStatusManager(url_statuses=None, url_block_list=["alias.com"])
+    assert manager.is_url_blocked("alias.com/page")

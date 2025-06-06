@@ -26,9 +26,9 @@ class AssistantBenchBenchmark(Benchmark):
     TEST_FILE = "assistant_bench_v1.0_test.jsonl"
 
     def __init__(self, name: str = "AssistantBench", data_dir: Union[str, None] = None):
-        assert (
-            data_dir is not None
-        ), "data_dir must be provided for AssistantBenchBenchmark"
+        assert data_dir is not None, (
+            "data_dir must be provided for AssistantBenchBenchmark"
+        )
         super().__init__(name=name, data_dir=data_dir)
         self.eval_result_class = AssistantBenchEvalResult
 
@@ -36,9 +36,9 @@ class AssistantBenchBenchmark(Benchmark):
         """
         Download the dataset into self.data_dir using huggingface_hub.snapshot_download().
         """
-        assert (
-            self.data_dir is not None
-        ), "data_dir must be provided for AssistantBenchBenchmark"
+        assert self.data_dir is not None, (
+            "data_dir must be provided for AssistantBenchBenchmark"
+        )
         if not os.path.exists(self.data_dir):
             os.makedirs(self.data_dir, exist_ok=True)
 

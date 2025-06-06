@@ -2,7 +2,7 @@ import asyncio
 import pytest
 from pydantic import BaseModel
 from autogen_core.models._model_client import ChatCompletionClient
-from autogen_core.models._types import CreateResult, RequestUsage
+from autogen_core.models import CreateResult, RequestUsage, ModelCapabilities
 from autogen_core import AgentId, CancellationToken
 from autogen_agentchat.agents import BaseChatAgent
 from autogen_agentchat.base import Response
@@ -37,7 +37,7 @@ class DummyChatCompletionClient(ChatCompletionClient):
             cached=False,
         )
 
-    async def create_stream(
+    def create_stream(
         self,
         messages,
         *,
@@ -46,15 +46,16 @@ class DummyChatCompletionClient(ChatCompletionClient):
         extra_create_args={},
         cancellation_token=None,
     ):
-        if False:
-            yield
-        yield ""
-        yield CreateResult(
-            finish_reason="stop",
-            content="",
-            usage=RequestUsage(0, 0),
-            cached=False,
-        )
+        async def gen():
+            yield ""
+            yield CreateResult(
+                finish_reason="stop",
+                content="",
+                usage=RequestUsage(0, 0),
+                cached=False,
+            )
+
+        return gen()
 
     def _to_config(self) -> DummyModelConfig:  # type: ignore[override]
         return DummyModelConfig()
@@ -79,12 +80,12 @@ class DummyChatCompletionClient(ChatCompletionClient):
         return 0
 
     @property
-    def capabilities(self):
-        return {}
+    def capabilities(self) -> ModelCapabilities:
+        return ModelCapabilities()
 
     @property
-    def model_info(self):
-        return {}
+    def model_info(self) -> dict:
+        return {"family": "TEST"}
 
 
 class SimpleAgent(BaseChatAgent):
@@ -106,8 +107,7 @@ class SimpleAgent(BaseChatAgent):
         self.paused = False
 
     async def on_reset(self, cancellation_token: CancellationToken) -> None:
-        """Reset agent state; no-op for tests."""
-        pass
+        self.paused = False
 
 
 @pytest.mark.asyncio

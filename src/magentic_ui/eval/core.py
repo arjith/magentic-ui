@@ -120,9 +120,9 @@ def _run_single_task(
     try:
         # Initialize or reload system
         if reload_system:
-            assert callable(
-                system_constructor
-            ), "If reload_system is true, system_constructor must be callable"
+            assert callable(system_constructor), (
+                "If reload_system is true, system_constructor must be callable"
+            )
             system = system_constructor()
         else:
             system = system_constructor
