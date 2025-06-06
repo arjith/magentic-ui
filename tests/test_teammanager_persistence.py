@@ -1,15 +1,10 @@
 import json
-import asyncio
-from pathlib import Path
-import types
-import sys
 import pytest
 
 # Skip if core dependencies are missing
 try:
     from magentic_ui.backend.teammanager import teammanager as tm_mod
     from magentic_ui.backend.teammanager.teammanager import TeamManager
-    from magentic_ui.types import RunPaths
 except Exception:
     pytest.skip("magentic_ui dependencies not installed", allow_module_level=True)
 

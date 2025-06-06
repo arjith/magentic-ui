@@ -1,4 +1,3 @@
-import pytest
 from magentic_ui.callback_wrapper import CallbackWrapper
 
 
