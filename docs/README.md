@@ -5,3 +5,5 @@ This folder collects additional developer documentation for Magentic-UI. It supp
 - [Code Overview](code_overview.md)
 - [Editing Guide](editing-guide.md)
 
+- [Callback Wrapper](callback_wrapper.md)
+

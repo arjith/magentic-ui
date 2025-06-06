@@ -77,9 +77,10 @@ class ApprovalConfig:
     ] = "never"
 
 
-# This works around our inability to pass a callback-wrapper object through the ComponentConfig
-# system, since it is designed for serialization/deserialization of the config object.
-# TODO: Figure out how to include callbacks in ComponentConfig-based object initialization
+# Context management helper for locating the current :class:`BaseApprovalGuard`.
+# A :class:`CallbackWrapper` pointing to :py:meth:`ApprovalGuardContext.approval_guard`
+# can be stored inside a ``ComponentConfig`` to retrieve the guard during
+# component initialization.
 class ApprovalGuardContext:
     def __init__(self) -> None:
         raise RuntimeError(
@@ -215,9 +216,8 @@ class ApprovalGuard(BaseApprovalGuard):
                 return self.default_approval
             action_proposal = action_context[-1] if action_context else None
             if action_proposal is None:
-                return (
-                    self.default_approval
-                )  # TODO: Should we require an approval if we have no context?
+                # With no context fallback to the configured default.
+                return self.default_approval
 
             check_prompt = IRREVERSIBLE_CHECK_PROMPT_TEMPLATE.format(
                 approval_message=action_proposal.content

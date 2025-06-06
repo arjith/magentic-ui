@@ -18,6 +18,7 @@ from .approval_guard import (
     ApprovalConfig,
     BaseApprovalGuard,
 )
+from .callback_wrapper import CallbackWrapper
 from .input_func import InputFuncType, make_agentchat_input_func
 from .learning.memory_provider import MemoryControllerProvider
 
@@ -180,6 +181,9 @@ async def get_task_team(
                 approval_policy=approval_policy,
             ),
         )
+    websurfer_config.approval_guard = CallbackWrapper.from_callable(
+        ApprovalGuardContext.approval_guard
+    )
     with ApprovalGuardContext.populate_context(approval_guard):
         web_surfer = WebSurfer.from_config(websurfer_config)
     if websurfer_loop_team:
