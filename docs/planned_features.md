@@ -1,8 +1,7 @@
 # Planned Features
 
-This document outlines proposed enhancements for Magentic-UI. Each section breaks
-down the feature into concrete tasks with implementation guidance, testing steps
-and fallback options.
+This document outlines proposed enhancements for Magentic-UI.
+Each section breaks down the feature into tasks with implementation guidance, testing steps and fallback options.
 
 ## 1. Automatic Port Allocation for Docker Browsers
 The Playwright browsers currently rely on pre-selected ports which can conflict
@@ -27,7 +26,7 @@ with running services.
 - Search Docker documentation for `Container.attrs["NetworkSettings"]["Ports"]`
   examples if mapping extraction fails.
 
-## 2. Memory Based Plan Suggestions
+## 2. Memory-Based Plan Suggestions
 Leverage the existing `MemoryControllerProvider` to surface relevant plans when
 creating new sessions.
 
