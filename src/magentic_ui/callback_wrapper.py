@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Callable
+from typing import Any, Callable, cast
 import importlib
 from pydantic import BaseModel, field_serializer, field_validator
 
@@ -39,4 +39,4 @@ class CallbackWrapper(BaseModel):
 
     @classmethod
     def from_callable(cls, func: Callable[..., Any]) -> "CallbackWrapper":
-        return cls(path=func)
+        return cls(path=cast(str, func))
