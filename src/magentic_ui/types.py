@@ -26,6 +26,15 @@ class RunPaths:
     external_run_dir: Path
 
 
+@dataclass
+class RunMetadata:
+    """Persistent metadata for a run."""
+
+    run_suffix: str
+    novnc_port: int
+    playwright_port: int
+
+
 class PlanStep(BaseModel):
     """
     A class representing a single step in a plan.
