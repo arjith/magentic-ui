@@ -17,6 +17,7 @@ from typing import (
     Sequence,
     Union,
 )
+from dataclasses import asdict
 import aiofiles
 import yaml
 from loguru import logger
@@ -26,7 +27,7 @@ from autogen_core import EVENT_LOGGER_NAME, CancellationToken, ComponentModel
 from autogen_core.logging import LLMCallEvent
 from ...task_team import get_task_team
 from ...teams import GroupChat
-from ...types import RunPaths
+from ...types import RunPaths, RunMetadata
 from ...magentic_ui_config import MagenticUIConfig, ModelClientConfigs
 from ...input_func import InputFuncType
 from ...agents import WebSurfer
@@ -119,6 +120,32 @@ class TeamManager:
             external_run_dir=external_run_dir,
         )
 
+    def _metadata_file(self, paths: RunPaths) -> Path:
+        run_dir = (
+            paths.internal_run_dir if self.inside_docker else paths.external_run_dir
+        )
+        return run_dir / "run_metadata.json"
+
+    def _load_metadata(self, paths: RunPaths) -> RunMetadata | None:
+        meta_path = self._metadata_file(paths)
+        if not meta_path.exists():
+            return None
+        try:
+            with open(meta_path, "r") as f:
+                data = json.load(f)
+            return RunMetadata(
+                run_suffix=data.get("run_suffix", paths.run_suffix),
+                novnc_port=int(data.get("novnc_port", -1)),
+                playwright_port=int(data.get("playwright_port", -1)),
+            )
+        except Exception:
+            return None
+
+    def _save_metadata(self, paths: RunPaths, metadata: RunMetadata) -> None:
+        meta_path = self._metadata_file(paths)
+        with open(meta_path, "w") as f:
+            json.dump(asdict(metadata), f)
+
     @staticmethod
     async def load_from_directory(directory: Union[str, Path]) -> List[Dict[str, Any]]:
         """Load all team configurations from a directory"""
@@ -148,8 +175,12 @@ class TeamManager:
     ) -> tuple[Team, int, int]:
         """Create team instance from config"""
 
+        metadata = self._load_metadata(paths)
         _, novnc_port, playwright_port = get_browser_resource_config(
-            paths.external_run_dir, -1, -1, self.inside_docker
+            paths.external_run_dir,
+            -1 if metadata is None else metadata.novnc_port,
+            -1 if metadata is None else metadata.playwright_port,
+            self.inside_docker,
         )
         try:
             if not self.load_from_config:
@@ -210,16 +241,22 @@ class TeamManager:
                 if state:
                     if isinstance(state, str):
                         try:
-                            # Try to decompress if it's compressed
                             state_dict = decompress_state(state)
                             await self.team.load_state(state_dict)
                         except Exception:
-                            # If decompression fails, assume it's a regular JSON string
                             state_dict = json.loads(state)
                             await self.team.load_state(state_dict)
                     else:
                         await self.team.load_state(state)
 
+                self._save_metadata(
+                    paths,
+                    RunMetadata(
+                        run_suffix=paths.run_suffix,
+                        novnc_port=novnc_port,
+                        playwright_port=playwright_port,
+                    ),
+                )
                 return self.team, novnc_port, playwright_port
 
             if isinstance(team_config, (str, Path)):
@@ -244,6 +281,15 @@ class TeamManager:
                     if isinstance(agent, WebSurfer):
                         novnc_port = agent.novnc_port or -1
                         playwright_port = agent.playwright_port or -1
+
+            self._save_metadata(
+                paths,
+                RunMetadata(
+                    run_suffix=paths.run_suffix,
+                    novnc_port=novnc_port,
+                    playwright_port=playwright_port,
+                ),
+            )
             return self.team, novnc_port, playwright_port
         except Exception as e:
             logger.error(f"Error creating team: {e}")
