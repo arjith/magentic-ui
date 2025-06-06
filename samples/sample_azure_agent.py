@@ -92,9 +92,9 @@ async def get_task_team_with_azure_agent(
         return ChatCompletionClient.load_component(model_client_config)
 
     if not magentic_ui_config.inside_docker:
-        assert (
-            paths.external_run_dir == paths.internal_run_dir
-        ), "External and internal run dirs must be the same in non-docker mode"
+        assert paths.external_run_dir == paths.internal_run_dir, (
+            "External and internal run dirs must be the same in non-docker mode"
+        )
 
     model_client_orch = get_model_client(
         magentic_ui_config.model_client_configs.orchestrator
@@ -148,7 +148,7 @@ async def get_task_team_with_azure_agent(
         url_statuses={key: "allowed" for key in orchestrator_config.allowed_websites}
         if orchestrator_config.allowed_websites
         else None,
-        url_block_list=get_internal_urls(magentic_ui_config.inside_docker, paths),
+        explicit_block_list=get_internal_urls(magentic_ui_config.inside_docker, paths),
         multiple_tools_per_call=magentic_ui_config.multiple_tools_per_call,
         downloads_folder=str(paths.internal_run_dir),
         debug_dir=str(paths.internal_run_dir),
@@ -163,15 +163,15 @@ async def get_task_team_with_azure_agent(
     if magentic_ui_config.user_proxy_type == "dummy":
         user_proxy = DummyUserProxy(name="user_proxy")
     elif magentic_ui_config.user_proxy_type == "metadata":
-        assert (
-            magentic_ui_config.task is not None
-        ), "Task must be provided for metadata user proxy"
-        assert (
-            magentic_ui_config.hints is not None
-        ), "Hints must be provided for metadata user proxy"
-        assert (
-            magentic_ui_config.answer is not None
-        ), "Answer must be provided for metadata user proxy"
+        assert magentic_ui_config.task is not None, (
+            "Task must be provided for metadata user proxy"
+        )
+        assert magentic_ui_config.hints is not None, (
+            "Hints must be provided for metadata user proxy"
+        )
+        assert magentic_ui_config.answer is not None, (
+            "Answer must be provided for metadata user proxy"
+        )
         user_proxy = MetadataUserProxy(
             name="user_proxy",
             description="Metadata User Proxy Agent",

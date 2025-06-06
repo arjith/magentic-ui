@@ -73,7 +73,7 @@ class TeamManager:
         if not path.exists():
             raise FileNotFoundError(f"Config file not found: {path}")
 
-        async with aiofiles.open(path) as f:
+        async with aiofiles.open(path, mode="r") as f:  # pyright: ignore[reportUnknownArgumentType,reportUnknownMemberType]
             content = await f.read()
             if path.suffix == ".json":
                 return json.loads(content)
