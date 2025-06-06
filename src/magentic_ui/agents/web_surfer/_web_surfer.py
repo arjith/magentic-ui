@@ -61,7 +61,6 @@ from playwright.async_api import (
 from ...tools.playwright.browser import PlaywrightBrowser, VncDockerPlaywrightBrowser
 
 from ...approval_guard import (
-    ApprovalGuardContext,
     BaseApprovalGuard,
     MaybeRequiresApproval,
 )
