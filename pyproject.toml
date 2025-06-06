@@ -59,6 +59,10 @@ ollama = [
 [project.scripts]
 magentic = "magentic_ui.backend.cli:run"
 
+[tool.poetry]
+name = "magentic_ui"
+version = "0.0.4"
+
 [tool.uv]
 dev-dependencies = [
     "poethepoet",
