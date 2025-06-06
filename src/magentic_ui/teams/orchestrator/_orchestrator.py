@@ -35,8 +35,10 @@ from autogen_agentchat.teams._group_chat._events import (
     GroupChatRequestPublish,
     GroupChatStart,
     GroupChatTermination,
+    GroupChatPause,
+    GroupChatResume,
+    GroupChatResume,
 )
-from ._events import GroupChatPause, GroupChatResume
 from autogen_agentchat.teams._group_chat._base_group_chat_manager import (
     BaseGroupChatManager,
 )
