@@ -56,7 +56,6 @@ Key files include:
    poe check
    ```
    to confirm formatting, linting, type checking and tests all succeed.
-
 ## 4. Clean Up Documentation
 Minor issues in the documentation can cause confusion for contributors.
 
@@ -68,7 +67,5 @@ Minor issues in the documentation can cause confusion for contributors.
    poe check
    ```
    to verify formatting and tests still pass.
-
----
 
 Keep this document up to date as tasks are completed or new issues are discovered.

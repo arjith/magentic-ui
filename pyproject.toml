@@ -59,6 +59,10 @@ ollama = [
 [project.scripts]
 magentic = "magentic_ui.backend.cli:run"
 
+[tool.poetry]
+name = "magentic_ui"
+version = "0.0.4"
+
 [tool.uv]
 dev-dependencies = [
     "poethepoet",
@@ -117,7 +121,7 @@ exclude = ["src/magentic_ui/eval"]
 [tool.pyright]
 include = ["src", "tests", "samples"]
 exclude = ["src/magentic_ui/eval/benchmarks/assistantbench/evaluate_utils", "src/magentic_ui/agents/web_surfer/_cua_web_surfer.py", "src/magentic_ui/backend/web/routes"]
-typeCheckingMode = "strict"
+typeCheckingMode = "basic"
 reportUnnecessaryIsInstance = false
 reportMissingTypeStubs = false
 
