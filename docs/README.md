@@ -9,3 +9,5 @@ This folder collects additional developer documentation for Magentic-UI. It supp
 
 - [Callback Wrapper](callback_wrapper.md)
 
+- [Planned Features](planned_features.md)
+
