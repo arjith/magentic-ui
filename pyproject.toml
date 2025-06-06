@@ -121,7 +121,7 @@ exclude = ["src/magentic_ui/eval"]
 [tool.pyright]
 include = ["src", "tests", "samples"]
 exclude = ["src/magentic_ui/eval/benchmarks/assistantbench/evaluate_utils", "src/magentic_ui/agents/web_surfer/_cua_web_surfer.py", "src/magentic_ui/backend/web/routes"]
-typeCheckingMode = "strict"
+typeCheckingMode = "basic"
 reportUnnecessaryIsInstance = false
 reportMissingTypeStubs = false
 

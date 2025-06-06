@@ -43,9 +43,9 @@ class CustomBenchmark(Benchmark):
         :param df: Optional pandas DataFrame with the columns
                    [id, question, answer, url, metadata, target_final_url, intermediate_url_list].
         """
-        assert df is not None or data_dir is not None, (
-            "Either df or data_dir must be provided"
-        )
+        assert (
+            df is not None or data_dir is not None
+        ), "Either df or data_dir must be provided"
         super().__init__(name=name, data_dir=data_dir)
         if answer_evaluator not in ["ab", "llm"]:
             raise ValueError("answer_evaluator must be either 'ab' or 'llm'")
