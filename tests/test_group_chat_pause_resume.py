@@ -93,7 +93,6 @@ class DummyChatCompletionClient(ChatCompletionClient):
             "structured_output": False,
         }
 
-
 class SimpleAgent(BaseChatAgent):
     def __init__(self, name: str):
         super().__init__(name, "simple agent")
