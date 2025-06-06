@@ -134,7 +134,16 @@ If you're interested in reading more checkout our [blog post](https://www.micros
 
 2. During the Installation step, you will need to set up your `OPENAI_API_KEY`. To use other models, review the [Custom Client Configuration](#custom-client-configuration) section below.
 
-3. You need at least [Python 3.10](https://www.python.org/downloads/) installed.
+3. Install [Python 3.12](https://www.python.org/downloads/) or later and
+   [poethepoet](https://github.com/nat-n/poethepoet) for running development
+   tasks:
+
+   ```bash
+   pip install poethepoet
+   ```
+
+   We recommend using [`uv`](https://docs.astral.sh/uv/getting-started/installation/)
+   for dependency management.
 
 
 If you are on Windows, you **must** run Magentic-UI inside [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install) (Windows Subsystem for Linux) for correct Docker and file path compatibility. The steps below assume you are using VS Code. 

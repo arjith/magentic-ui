@@ -2,7 +2,7 @@ import asyncio
 import pytest
 from pydantic import BaseModel
 from autogen_core.models._model_client import ChatCompletionClient
-from autogen_core.models._types import CreateResult, RequestUsage
+from autogen_core.models import CreateResult, RequestUsage, ModelCapabilities
 from autogen_core import AgentId, CancellationToken
 from autogen_agentchat.agents import BaseChatAgent
 from autogen_agentchat.base import Response
@@ -37,6 +37,26 @@ class DummyChatCompletionClient(ChatCompletionClient):
             cached=False,
         )
 
+    def create_stream(
+        self,
+        messages,
+        *,
+        tools=[],
+        json_output=None,
+        extra_create_args={},
+        cancellation_token=None,
+    ):
+        async def gen():
+            yield ""
+            yield CreateResult(
+                finish_reason="stop",
+                content="",
+                usage=RequestUsage(0, 0),
+                cached=False,
+            )
+
+        return gen()
+
     def _to_config(self) -> DummyModelConfig:  # type: ignore[override]
         return DummyModelConfig()
 
@@ -46,6 +66,26 @@ class DummyChatCompletionClient(ChatCompletionClient):
 
     async def close(self) -> None:
         pass
+
+    def actual_usage(self) -> RequestUsage:
+        return RequestUsage(0, 0)
+
+    def total_usage(self) -> RequestUsage:
+        return RequestUsage(0, 0)
+
+    def count_tokens(self, messages, *, tools=[]):
+        return 0
+
+    def remaining_tokens(self, messages, *, tools=[]):
+        return 0
+
+    @property
+    def capabilities(self) -> ModelCapabilities:
+        return ModelCapabilities()
+
+    @property
+    def model_info(self) -> dict:
+        return {"family": "TEST"}
 
 
 class SimpleAgent(BaseChatAgent):
@@ -64,6 +104,9 @@ class SimpleAgent(BaseChatAgent):
         self.paused = True
 
     async def on_resume(self, cancellation_token: CancellationToken) -> None:
+        self.paused = False
+
+    async def on_reset(self, cancellation_token: CancellationToken) -> None:
         self.paused = False
 
 
