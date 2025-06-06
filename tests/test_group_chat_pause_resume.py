@@ -73,20 +73,25 @@ class DummyChatCompletionClient(ChatCompletionClient):
     def total_usage(self) -> RequestUsage:
         return RequestUsage(0, 0)
 
-    def count_tokens(self, messages, *, tools=[]):
+    def count_tokens(self, messages, *, tools=[]) -> int:
         return 0
 
-    def remaining_tokens(self, messages, *, tools=[]):
+    def remaining_tokens(self, messages, *, tools=[]) -> int:
         return 0
 
     @property
-    def capabilities(self) -> ModelCapabilities:
-        return ModelCapabilities()
+    def capabilities(self):
+        return {"vision": False, "function_calling": False, "json_output": False}
 
     @property
-    def model_info(self) -> dict:
-        return {"family": "TEST"}
-
+    def model_info(self):
+        return {
+            "vision": False,
+            "function_calling": False,
+            "json_output": False,
+            "family": "dummy",
+            "structured_output": False,
+        }
 
 class SimpleAgent(BaseChatAgent):
     def __init__(self, name: str):
@@ -107,6 +112,7 @@ class SimpleAgent(BaseChatAgent):
         self.paused = False
 
     async def on_reset(self, cancellation_token: CancellationToken) -> None:
+        """Reset the agent's paused state."""
         self.paused = False
 
 
